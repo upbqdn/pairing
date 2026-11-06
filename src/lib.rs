@@ -21,9 +21,9 @@ pub use group;
 
 use core::ops::{Add, AddAssign, Mul};
 use group::{
-    Group, GroupOps, GroupOpsOwned, ScalarMul, ScalarMulOwned, UncompressedEncoding,
     ff::PrimeField,
     prime::{PrimeCurve, PrimeCurveAffine},
+    Group, GroupOps, GroupOpsOwned, ScalarMul, ScalarMulOwned, UncompressedEncoding,
 };
 
 /// An "engine" is a collection of types (fields, elliptic curve groups, etc.)
@@ -124,4 +124,13 @@ pub trait MillerLoopResult:
     /// loop into an element of [`MillerLoopResult::Gt`], so that it can be compared with
     /// other elements of `Gt`.
     fn final_exponentiation(&self) -> Self::Gt;
+
+    /// Final exponentiation for verification inputs whose representation may
+    /// be exposed through timing, including fresh verifier randomizers.
+    ///
+    /// Do not use this with secret pairing inputs. The default preserves the
+    /// ordinary final-exponentiation implementation.
+    fn final_exponentiation_vartime(&self) -> Self::Gt {
+        self.final_exponentiation()
+    }
 }
